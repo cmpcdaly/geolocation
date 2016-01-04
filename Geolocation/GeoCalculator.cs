@@ -18,6 +18,10 @@ namespace Geolocation
         /// </summary>
         public static double EarthRadiusInMiles = 3956.0;
 
+        public static double EarthRadiusInKiloMetres = 6371.0;
+
+        public static double EarthRadiusInMetres = 6371000.0;
+
         /// <summary>   
         /// Calculate the distance between two sets of coordinates.
         /// <param name="originLatitude">The latitude of the origin location in decimal notation</param>
@@ -25,16 +29,20 @@ namespace Geolocation
         /// <param name="destinationLatitude">The latitude of the destination location in decimal notation</param>
         /// <param name="destinationLongitude">The longitude of the destination location in decimal notation</param>
         /// <param name="decimalPlaces">The number of decimal places to round the return value to</param>
+        /// <param name="distanceUnit">The unit of distance</param>
         /// <returns>A <see cref="Double"/> value representing the distance in miles from the origin to the destination coordinate</returns>
         /// </summary>
-        public static double GetDistance(double originLatitude, double originLongitude, double destinationLatitude, double destinationLongitude, int decimalPlaces)
+        public static double GetDistance(double originLatitude, double originLongitude, double destinationLatitude, double destinationLongitude, int decimalPlaces, DistanceUnit distanceUnit)
         {
             if (!CoordinateValidator.Validate(originLatitude, originLongitude))
                 throw new ArgumentException("Invalid origin coordinates supplied.");
             if (!CoordinateValidator.Validate(destinationLatitude, destinationLongitude))
                 throw new ArgumentException("Invalid destination coordinates supplied.");
 
-            double radius = EarthRadiusInMiles;
+            double radius = distanceUnit == DistanceUnit.Miles ? EarthRadiusInMiles
+                : distanceUnit == DistanceUnit.KiloMetres ? EarthRadiusInKiloMetres
+                : EarthRadiusInMetres;
+
             return Math.Round(
                     radius * 2 *
                     Math.Asin(Math.Min(1,
@@ -51,11 +59,40 @@ namespace Geolocation
         /// <param name="originCoordinate">A <see cref="Coordinate"/> object representing the origin location</param>
         /// <param name="destinationCoordinate">A <see cref="Coordinate"/> object representing the destination location</param>
         /// <param name="decimalPlaces">The number of decimal places to round the return value to</param>
+        /// <param name="distanceUnit">The unit of distance</param>
+        /// <returns>A <see cref="Double"/> value representing the distance in miles from the origin to the destination coordinate</returns>
+        public static Double GetDistance(Coordinate originCoordinate, Coordinate destinationCoordinate, int decimalPlaces, DistanceUnit distanceUnit)
+        {
+            return GetDistance(originCoordinate.Latitude, originCoordinate.Longitude, destinationCoordinate.Latitude,
+                destinationCoordinate.Longitude, decimalPlaces, distanceUnit);
+        }
+
+        /// <summary>   
+        /// Calculate the distance between two sets of coordinates in Miles.
+        /// <param name="originLatitude">The latitude of the origin location in decimal notation</param>
+        /// <param name="originLongitude">The longitude of the origin location in decimal notation</param>
+        /// <param name="destinationLatitude">The latitude of the destination location in decimal notation</param>
+        /// <param name="destinationLongitude">The longitude of the destination location in decimal notation</param>
+        /// <param name="decimalPlaces">The number of decimal places to round the return value to</param>
+        /// <returns>A <see cref="Double"/> value representing the distance in miles from the origin to the destination coordinate</returns>
+        /// </summary>
+        public static double GetDistance(double originLatitude, double originLongitude, double destinationLatitude, double destinationLongitude, int decimalPlaces)
+        {
+            return GetDistance(originLatitude, originLongitude, destinationLatitude,
+                destinationLongitude, decimalPlaces, DistanceUnit.Miles);
+        }
+
+        /// <summary>
+        /// Calculate the distance between two sets of <see cref="Coordinate"/> objects in Miles.
+        /// </summary>
+        /// <param name="originCoordinate">A <see cref="Coordinate"/> object representing the origin location</param>
+        /// <param name="destinationCoordinate">A <see cref="Coordinate"/> object representing the destination location</param>
+        /// <param name="decimalPlaces">The number of decimal places to round the return value to</param>
         /// <returns>A <see cref="Double"/> value representing the distance in miles from the origin to the destination coordinate</returns>
         public static Double GetDistance(Coordinate originCoordinate, Coordinate destinationCoordinate, int decimalPlaces)
         {
             return GetDistance(originCoordinate.Latitude, originCoordinate.Longitude, destinationCoordinate.Latitude,
-                destinationCoordinate.Longitude, decimalPlaces);
+                destinationCoordinate.Longitude, decimalPlaces, DistanceUnit.Miles);
         }
 
         /// <summary>
