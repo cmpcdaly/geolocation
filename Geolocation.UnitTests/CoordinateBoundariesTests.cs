@@ -139,5 +139,20 @@ namespace Geolocation.UnitTests
 
             Assert.AreEqual(boundaries.MaxLongitude, expectedResult);
         }
+
+        [Test]
+        public void CalculateReturnsCorrectMaximumLatitudeWithMetres()
+        {
+            // Arrange
+            var origin = new Coordinate() { Latitude = 53.401556, Longitude = -2.978207 };
+            int distance = 100;
+
+            // Act
+            var boundaries = new CoordinateBoundaries(origin, distance, DistanceUnit.Metres);
+
+            // Assert
+            double expectedResult = 53.402456535818814;
+            Assert.AreEqual(boundaries.MaxLatitude, expectedResult);
+        }
     }
 }

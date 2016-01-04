@@ -146,6 +146,21 @@ namespace Geolocation.UnitTests
 
             Assert.AreEqual(direction, expectedResult);
         }
+        
+        [Test]
+        public void GetDirectionWithCoordinateObjectReturnsCorrectResultForMetres()
+        {
+            // Arrange
+            Coordinate origin = new Coordinate() { Latitude = 53.401556, Longitude = -2.978207 };
+            Coordinate destination = new Coordinate() { Latitude = 53.401377, Longitude = -2.976657 };
+
+            // Act
+            double distance = GeoCalculator.GetDistance(origin, destination, 15, DistanceUnit.Metres);
+
+            // Assert
+            const double expectedResult = 104.6670163885734;
+            Assert.AreEqual(distance, expectedResult);
+        }
 
         //TODO: Add unit tests for all cardinal directions including boundary values.
     }
